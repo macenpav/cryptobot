@@ -1,0 +1,5 @@
+# rename this file to 'config.ini' for usage
+
+[hitbtc_credentials]
+public_key = <my_public_key>
+secret = <my_secret>
