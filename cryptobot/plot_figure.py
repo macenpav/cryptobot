@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from cryptobot.hitbtc.hitbtc_client import *
-from cryptobot.data_analysis import data_collector
+from cryptobot.data_analysis.data_collector import DataCollector
 from datetime import datetime
 from time import sleep
 import configparser
@@ -13,7 +13,12 @@ if __name__ == "__main__":
                           config['hitbtc_credentials']['public_key'],
                           config['hitbtc_credentials']['secret'])
 
-    dc = data_collector(client)
+    r = client.create_buy_order(symbol="ADABTC", quantity=100, price=0.00002)
+    print(r)
+    r = client.create_sell_order(symbol="ADABTC", quantity=100, price=0.002)
+    print(r)
+
+    '''dc = DataCollector(client)
 
     num_of_minutes = 12 * 60
 
@@ -54,4 +59,4 @@ if __name__ == "__main__":
             print("Failed to receive data... current time is {0}".format(datetime.now()))
             sleep(1)
 
-    plt.show()
+    plt.show()'''

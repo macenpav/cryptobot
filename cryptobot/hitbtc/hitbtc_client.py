@@ -5,7 +5,17 @@ class NoDataException(Exception):
     pass
 
 
+class InvalidDataException(Exception):
+    pass
+
+
+class ResponseException(Exception):
+    pass
+
+
 class HitBtcClient(object):
+    SUPPORTED_SYMBOLS = ['BTCUSD', 'ADABTC']
+
     def __init__(self, url, public_key, secret):
         self.__url = url + '/api/2'
         self.__session = requests.session()
@@ -13,6 +23,12 @@ class HitBtcClient(object):
 
     def __get_data(self, url):
         data = self.__session.get(self.__url + "/" + url).json()
+        if not data:
+            raise NoDataException
+        return data
+
+    def __put_data(self, url, payload):
+        data = self.__session.post(self.__url + "/" + url, data=payload).json()
         if not data:
             raise NoDataException
         return data
@@ -47,5 +63,39 @@ class HitBtcClient(object):
     def get_trading_balance(self, currency=None):
         return self.__get_balance('trading', currency)
 
-    def get_ticker_info(self):
-        return self.__get_data(r"public/ticker/BTCUSD")
+    def __create_order(self, type, **kwargs):
+        symbol = kwargs.get('symbol', None)
+        if symbol is not None:
+            if symbol not in self.SUPPORTED_SYMBOLS:
+                raise InvalidDataException
+
+        quantity = kwargs.get('quantity', 0)
+        if quantity < 0:
+            raise InvalidDataException
+        price = kwargs.get('price', 0)
+        if price < 0:
+            raise InvalidDataException
+
+        payload = {
+            'symbol': symbol,
+            'quantity': quantity,
+            'price': price,
+            'side': type
+        }
+        return payload
+
+    def create_sell_order(self, **kwargs):
+        payload = self.__create_order(r'sell', **kwargs)
+        r = self.__put_data(r'order', payload)
+        if 'error' in r:
+            print(r)
+            raise ResponseException
+        return r
+
+    def create_buy_order(self, **kwargs):
+        payload = self.__create_order(r'buy', **kwargs)
+        r = self.__put_data(r'order', payload)
+        if 'error' in r:
+            print(r)
+            raise ResponseException
+        return r
