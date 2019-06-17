@@ -13,8 +13,13 @@ class ResponseException(Exception):
     pass
 
 
+class InvalidDataException(Exception):
+    def __init__(self, msg):
+        self.msg = msg
+
+
 class HitBtcClient(object):
-    SUPPORTED_SYMBOLS = ['BTCUSD', 'ADABTC']
+    SUPPORTED_SYMBOLS = ['BTCUSD']
 
     def __init__(self, url, public_key, secret):
         self.__url = url + '/api/2'
