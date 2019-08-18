@@ -1,5 +1,11 @@
-# rename this file to 'config.ini' for usage
+; rename this file to 'config.ini' for usage
 
 [hitbtc_credentials]
 public_key = <my_public_key>
 secret = <my_secret>
+
+[settings]
+; length of a single time period for ichomoku cloud
+period_len = <value>
+; time in seconds to collect data periodically
+refresh_rate = <value>

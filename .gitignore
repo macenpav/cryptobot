@@ -105,3 +105,4 @@ my_db.db
 
 .idea/*
 *.db-journal
+*.db

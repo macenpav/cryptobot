@@ -19,7 +19,7 @@ class InvalidDataException(Exception):
 
 
 class HitBtcClient(object):
-    SUPPORTED_SYMBOLS = ['BTCUSD']
+    DEFAULT_CURRENCY = 'BTCUSD'
 
     def __init__(self, url, public_key, secret):
         self.__url = url + '/api/2'
@@ -51,6 +51,9 @@ class HitBtcClient(object):
                     out.append(b)
         return out
 
+    def get_ticker(self, currency=DEFAULT_CURRENCY):
+        return self.__get_data("public/ticker/{0}".format(currency))
+
     def get_candles(self, symbol, **kwargs):
         opt = ""
         # max=1000, default=100
@@ -71,8 +74,7 @@ class HitBtcClient(object):
     def __create_order(self, type, **kwargs):
         symbol = kwargs.get('symbol', None)
         if symbol is not None:
-            if symbol not in self.SUPPORTED_SYMBOLS:
-                raise InvalidDataException
+            raise InvalidDataException
 
         quantity = kwargs.get('quantity', 0)
         if quantity < 0:
